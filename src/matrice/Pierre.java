@@ -2,7 +2,7 @@ package matrice;
 
 public class Pierre extends Ressource {
 	
-private int poids = 2;
+private int poids = 3;
 	
 	// Constructor
 	public Pierre(String id) {
