@@ -1,7 +1,5 @@
 package matrice;
 
-
-
 public class Hero{
     private String nom;
     private Ressource[] stockBle = new Ressource[13] ;
@@ -13,16 +11,27 @@ public class Hero{
     private int partiesJouees;
     private int[] caseCourante =  new int[2];
     
-    public Hero(String nom, Ressource[] stockBlé, Ressource[] stockBois, Pierre pierre, ObjetManufacture farine, ObjetManufacture feu) {
+    public Hero(String nom) {
         this.nom = nom;
-        this.stockBle = stockBle;
-        this.stockBois = stockBois;
-        this.stockPierre = stockPierre;
+    
         this.farine = farine;
-        this.feu = feu;
-        this.poidsEmporte = 0;
-        this.partiesJouees = 0;
-        this.caseCourante = caseCourante ;
+        
+        poidsEmporte = 0;
+        partiesJouees = 0;
+        caseCourante[0] = 0;
+        caseCourante[1] = 0;
+        
+        for(Ressource ressource: stockBle) {
+        	ressource = null;
+        }
+        for(Ressource ressource: stockBois) {
+        	ressource = null;
+        }
+        for(Ressource ressource: stockPierre) {
+        	ressource = null;
+        }
+        
+        
     }
     
     public String getNom() {
@@ -62,7 +71,8 @@ public class Hero{
     }
     
     public void setCaseCourante(int x, int y) {
-        this.caseCourante = caseCourante;
+        this.caseCourante[0] = x;
+        this.caseCourante[1] = y;
     }
     
     public void incrémenterPartiesJouées() {
@@ -91,8 +101,8 @@ public class Hero{
                 }
             } else if (ressource instanceof Pierre) {
                 for (int i = 0; i < this.stockPierre.length; i++) {
-                    if (this.stockBois[i] == null) {
-                        this.stockBois[i] = ressource;
+                    if (this.stockPierre[i] == null) {
+                        this.stockPierre[i] = ressource;
                         break;
                     }
                 }
@@ -105,4 +115,11 @@ public class Hero{
             return false; // Capacité d'emport dépassée
         }
     }
+    
+    public int jouer(Ressource[][] map) {
+    	int nbDeplacements = 0;
+    	
+    	return nbDeplacements;
+    }
+    
 }
