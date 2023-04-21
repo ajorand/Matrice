@@ -17,6 +17,14 @@ public class Bois extends Ressource implements Utilisable {
 	 * */
 	public ObjetManufacture utiliser(Ressource[] r) {
 		
+		// Vérification que le joueur a 5 bois dans son inventaire
+		for(int i = 0; i < 6; i++) {
+			if(r[i] instanceof Bois) {
+				
+			}
+		}
+		
+		
 		ObjetManufacture feu = new ObjetManufacture("Feu");
 		return feu;
 	}
