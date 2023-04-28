@@ -9,7 +9,9 @@ public class Bois extends Ressource implements Utilisable {
 		super(id);
 	}
 	
+	
 	// Methods
+	
 	
 	/*
 	 * La méthode utiliser de Bois prend un tableau de 5 bois en paramètre et retourne un objet
@@ -29,19 +31,22 @@ public class Bois extends Ressource implements Utilisable {
 		if(nbrDeBois >= 5) {
 			
 			// On parcours le tableau pour retirer les 5 derniers bois
-			for(int i = 5; i == 0; i--) {
+			for(int y = 5; y >= 0; y--) {
 				
-				if(nbrDeBois == nbrDeBois - 5) {
+				if(nbrDeBois ==  0) {
 					break;
 				}
 				
-				if(r[i] != null) {
-					r[i] = null;
+				if(r[y] != null) {
+					r[y] = null;
+					nbrDeBois--;
 				}
 			}
 			
+			
 			// Return
 			ObjetManufacture feu = new ObjetManufacture("Feu");
+			System.out.println("Vous avez fait du feu");
 			return feu;
 		}
 		else {

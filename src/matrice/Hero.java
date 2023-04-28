@@ -9,17 +9,17 @@ public class Hero{
     private ObjetManufacture feu;
     private int poidsEmporte;
     private int partiesJouees;
-    private int[] caseCourante =  new int[2];
+    private Paire<Integer, Integer> caseCourante;
+    private Ressource[][] map;
+ 
     
     public Hero(String nom) {
-        this.nom = nom;
-    
-        this.farine = farine;
+        
+    	this.nom = nom;
         
         poidsEmporte = 0;
         partiesJouees = 0;
-        caseCourante[0] = 0;
-        caseCourante[1] = 0;
+        caseCourante = new Paire<>(0, 0);
         
         for(Ressource ressource: stockBle) {
         	ressource = null;
@@ -30,7 +30,6 @@ public class Hero{
         for(Ressource ressource: stockPierre) {
         	ressource = null;
         }
-        
         
     }
     
@@ -66,14 +65,6 @@ public class Hero{
         return this.partiesJouees;
     }
     
-    public int[] getCaseCourante() {
-        return this.caseCourante;
-    }
-    
-    public void setCaseCourante(int x, int y) {
-        this.caseCourante[0] = x;
-        this.caseCourante[1] = y;
-    }
     
     public void incrémenterPartiesJouées() {
         this.partiesJouees++;
@@ -116,10 +107,379 @@ public class Hero{
         }
     }
     
-    public int jouer(Ressource[][] map) {
-    	int nbDeplacements = 0;
-    	
-    	return nbDeplacements;
+    
+    private void prendre() {
+    
+    	if(map[caseCourante.getPositionX()][caseCourante.getPositionY()] != null) {
+    		if(ajouterRessource(map[caseCourante.getPositionX()][caseCourante.getPositionY()]) == true) {
+    			map[caseCourante.getPositionX()][caseCourante.getPositionY()] = null;
+    		}
+    		else {
+    			System.out.println("Il n'y a rien ici");
+    		}
+    	}
     }
     
+    
+    public boolean fairePain() {
+    	if(farine == null && feu == null) {
+    		System.out.println("Il vous manque le feu ou la farine pour faire du pain");
+    		return false;
+    	}
+    	else {
+    		System.out.println("Vous avez fait du pain");
+    		return true;
+    	}
+    }
+    
+    
+    private void seDeplacer(Direction direction) {
+    	
+    	switch (direction) {
+    	  case HAUT:
+    	  	  caseCourante.setPositionY(caseCourante.getPositionY() + 1);
+    	      break;
+    	  case BAS:
+    		  caseCourante.setPositionY(caseCourante.getPositionY() - 1);
+    	      break;
+    	  case GAUCHE:
+    		  caseCourante.setPositionX(caseCourante.getPositionX() - 1);
+    		  break;
+    	  case DROITE:
+    		  caseCourante.setPositionX(caseCourante.getPositionX() + 1);
+    	  	  break;
+    	  default:
+    	      break;
+    	}
+    	
+    }
+    
+    public boolean verifierStock(Ressource[] ressource, int nbrAttendu) {
+		int nbrRessource = 0;
+    	for(int i = 0; i < ressource.length; i++) {
+			if(ressource[i] != null) {
+				nbrRessource++;
+			}
+		}
+    	
+    	if(nbrRessource >= nbrAttendu) {
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
+    }
+    
+    public int jouer(Ressource[][] map) {
+    	
+    	// Attributs et initialisation
+    	this.map = map;
+    	int nbDeplacements = 0;
+    	
+    	
+    	// On récupère les 5 bois
+    	
+    	while(verifierStock(stockBois, 5) == false) {
+    		
+    		// Etape 1 : matrice de couts
+        	// Initialisation de la matrice en fonction de la case Courante
+        	int[][] matriceDeCouts = new int[10][10];
+        	
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			matriceDeCouts[x][y] = Math.abs(caseCourante.getPositionX() - x) + Math.abs(caseCourante.getPositionY() - y);	
+        		}
+        	}
+        
+        	
+        	// Case sans bois cout a 100
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			if(map[x][y] instanceof Bois) {}
+        			else {
+        				matriceDeCouts[x][y] = 100;
+        			}
+        		}
+        	}
+        	
+        	// Case courante cout a 100
+        	matriceDeCouts[caseCourante.getPositionX()][caseCourante.getPositionY()] = 99;
+        	
+      
+        	
+        	// On défini donc ou on va
+        	int caseDestinationX = 0;
+        	int caseDestinationY = 0;
+        	int min = 50;
+        	
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			if(matriceDeCouts[x][y] < min) {
+        				caseDestinationX = x;
+        				caseDestinationY = y;
+        				min = matriceDeCouts[x][y];
+        			}
+        		}
+        	}
+        	
+        	
+        	// On se déplace jusqu'à caseDestination en X puis Y
+        	// On déplace les X
+        	while(caseCourante.getPositionX() != caseDestinationX) {
+        		if(caseCourante.getPositionX() > caseDestinationX) {
+        			seDeplacer(Direction.GAUCHE);
+        		}
+        		else {
+        			seDeplacer(Direction.DROITE);
+        		}
+        		nbDeplacements++;
+        	}
+        	
+        	// On déplace Y
+			while(caseCourante.getPositionY() != caseDestinationY) {
+				if(caseCourante.getPositionY() > caseDestinationY) {
+					seDeplacer(Direction.BAS);
+				}
+				else {
+					seDeplacer(Direction.HAUT);
+				}
+				nbDeplacements++;
+			}
+        	
+        	
+        	// On prend l'objet sur la case
+        	prendre();
+        	
+        	
+    	}
+    	
+    	feu = ((Bois)stockBois[0]).utiliser(stockBois);
+    	
+    	
+    	
+    	
+    	
+    	/*
+    	 * Pierre
+    	 * */
+    	while(verifierStock(stockPierre, 1) == false) {
+    		
+    		// Etape 1 : matrice de couts
+        	// Initialisation de la matrice en fonction de la case Courante
+        	int[][] matriceDeCouts = new int[10][10];
+        	
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			matriceDeCouts[x][y] = Math.abs(caseCourante.getPositionX() - x) + Math.abs(caseCourante.getPositionY() - y);	
+        		}
+        	}
+        	
+        	
+        	// Case courante cout a 100
+        	matriceDeCouts[caseCourante.getPositionX()][caseCourante.getPositionY()] = 100;
+        	
+        	// Case sans ble cout a 100
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			if(map[x][y] instanceof Pierre) {}
+        			else {
+        				matriceDeCouts[x][y] = 100;
+        			}
+        		}
+        	}
+        	
+        	// On défini donc ou on va
+        	int caseDestinationX = 0;
+        	int caseDestinationY = 0;
+        	int min = 50;
+        	
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			if(matriceDeCouts[x][y] < min) {
+        				caseDestinationX = x;
+        				caseDestinationY = y;
+        				min = matriceDeCouts[x][y];
+        			}
+        		}
+        	}
+        	
+        	
+        	// On se déplace jusqu'à caseDestination en X puis Y
+        	// On déplace les X
+        	while(caseCourante.getPositionX() != caseDestinationX) {
+        		if(caseCourante.getPositionX() > caseDestinationX) {
+        			seDeplacer(Direction.GAUCHE);
+        		}
+        		else {
+        			seDeplacer(Direction.DROITE);
+        		}
+        		nbDeplacements++;
+        	}
+        	
+        	// On déplace Y
+			while(caseCourante.getPositionY() != caseDestinationY) {
+				if(caseCourante.getPositionY() > caseDestinationY) {
+					seDeplacer(Direction.BAS);
+				}
+				else {
+					seDeplacer(Direction.HAUT);
+				}
+				nbDeplacements++;
+			}
+        	
+        	
+        	// On prend l'objet sur la case
+        	prendre();
+        	
+    	}
+    	
+    	
+    	
+    	/*
+    	 * Ble
+    	 * */
+    	while(verifierStock(stockBle, 10) == false) {
+    		
+    		// Etape 1 : matrice de couts
+        	// Initialisation de la matrice en fonction de la case Courante
+        	int[][] matriceDeCouts = new int[10][10];
+        	
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			matriceDeCouts[x][y] = Math.abs(caseCourante.getPositionX() - x) + Math.abs(caseCourante.getPositionY() - y);	
+        		}
+        	}
+        	
+        	
+        	// Case sans ble cout a 100
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			if(map[x][y] instanceof Ble) {}
+        			else {
+        				matriceDeCouts[x][y] = 1000;
+        			}
+        		}
+        	}
+        	
+        	// Case courante cout a 100
+        	matriceDeCouts[caseCourante.getPositionX()][caseCourante.getPositionY()] = 1000;
+        	
+        	/*
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			System.out.print(matriceDeCouts[x][y] + " ");
+        		}
+        		System.out.println(" ");
+        	}
+        	System.out.println(" ");
+        	System.out.println(" ");
+        	*/
+        	
+        	// On défini donc ou on va
+        	int caseDestinationX = 0;
+        	int caseDestinationY = 0;
+        	int min = 500;
+        	
+        	for(int x = 0; x < 10; x++) {
+        		for(int y = 0; y < 10; y++) {
+        			if(matriceDeCouts[x][y] < min) {
+        				caseDestinationX = x;
+        				caseDestinationY = y;
+        				min = matriceDeCouts[x][y];
+        			}
+        		}
+        	}
+        	
+        	
+        	// On se déplace jusqu'à caseDestination en X puis Y
+        	// On déplace les X
+        	while(caseCourante.getPositionX() != caseDestinationX) {
+        		if(caseCourante.getPositionX() > caseDestinationX) {
+        			seDeplacer(Direction.GAUCHE);
+        		}
+        		else {
+        			seDeplacer(Direction.DROITE);
+        		}
+        		nbDeplacements++;
+        	}
+        	
+        	// On déplace Y
+			while(caseCourante.getPositionY() != caseDestinationY) {
+				if(caseCourante.getPositionY() > caseDestinationY) {
+					seDeplacer(Direction.BAS);
+				}
+				else {
+					seDeplacer(Direction.HAUT);
+				}
+				nbDeplacements++;
+			}
+        	
+        	
+        	// On prend l'objet sur la case
+        	prendre();
+        	
+        	
+        	
+        	
+    	}
+    	
+    	
+    	
+    	farine = ((Pierre)stockPierre[0]).utiliser(stockBle);
+    	
+    	fairePain();
+    	
+    	
+    	/*
+    	 * Aller en 9x9
+    	 * */
+    	
+    	
+    	// On défini donc ou on va
+    	int caseDestinationX = 9;
+    	int caseDestinationY = 9;
+    	
+    	
+    	// On se déplace jusqu'à caseDestination en X puis Y
+    	// On déplace les X
+    	while(caseCourante.getPositionX() != caseDestinationX) {
+    		if(caseCourante.getPositionX() > caseDestinationX) {
+    			seDeplacer(Direction.GAUCHE);
+    		}
+    		else {
+    			seDeplacer(Direction.DROITE);
+    		}
+    		nbDeplacements++;
+    	}
+    	
+    	// On déplace Y
+		while(caseCourante.getPositionY() != caseDestinationY) {
+			if(caseCourante.getPositionY() > caseDestinationY) {
+				seDeplacer(Direction.BAS);
+			}
+			else {
+				seDeplacer(Direction.HAUT);
+			}
+			nbDeplacements++;
+		}
+		
+		if(caseCourante.getPositionX() == 9 && caseCourante.getPositionY() == 9) {
+			return nbDeplacements;
+		}
+		else {
+			return 0;
+		}
+    	
+    }
+    
+    
+    
+	
+    
 }
+
+
+
+
+
+

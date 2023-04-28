@@ -21,24 +21,26 @@ private int poids = 3;
 			}
 		}
 		
-		// S'il en a au moins 5
+		// S'il en a au moins 10
 		if(nbrDeBle >= 10) {
 			
 			// On parcours le tableau pour retirer les 10 derniers blés
-			for(int i = 12; i == 0; i--) {
+			for(int i = 12; i >= 0; i--) {
 				
-				if(nbrDeBle == nbrDeBle - 10) {
+				if(nbrDeBle == 0) {
 					break;
 				}
 				
 				if(r[i] != null) {
 					r[i] = null;
+					nbrDeBle--;
 				}
 			}
 			
 			// Return
-			ObjetManufacture feu = new ObjetManufacture("Farine");
-			return feu;
+			ObjetManufacture farine = new ObjetManufacture("Farine");
+			System.out.println("Vous avez fait de la farine");
+			return farine;
 		}
 		else {
 			System.out.println("Vous n'avez pas assez de blé pour faire de la farine");
