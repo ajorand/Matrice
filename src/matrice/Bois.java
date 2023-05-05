@@ -2,6 +2,7 @@ package matrice;
 
 public class Bois extends Ressource implements Utilisable {
 	
+	// Attributs
 	private int poids = 2;
 	
 	// Constructor
@@ -13,10 +14,11 @@ public class Bois extends Ressource implements Utilisable {
 	// Methods
 	
 	
-	/*
-	 * La méthode utiliser de Bois prend un tableau de 5 bois en paramètre et retourne un objet
-	   ObjetManufacture de type Feu.
-	 * */
+	/***
+	 * 
+	 * @param r : tableau de ressources
+	 * @return : retourne un objet de type ObjetManufacture "Feu" si le joueur a les ressource nécéssaires
+	 */
 	public ObjetManufacture utiliser(Ressource[] r) {
 		int nbrDeBois = 0;
 		
@@ -44,11 +46,12 @@ public class Bois extends Ressource implements Utilisable {
 			}
 			
 			
-			// Return
+			// Return l'objet Feu
 			ObjetManufacture feu = new ObjetManufacture("Feu");
 			System.out.println("Vous avez fait du feu");
 			return feu;
 		}
+		// Sinon affiche une erreur et renvoie null
 		else {
 			System.out.println("Vous n'avez pas assez de bois pour faire du feu");
 			return null;

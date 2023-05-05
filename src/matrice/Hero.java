@@ -1,7 +1,10 @@
 package matrice;
 
 public class Hero {
-
+	
+	
+	// Attributs
+	
 	private String nom;
 
 	private Ressource[] stockBle = new Ressource[13];
@@ -15,7 +18,7 @@ public class Hero {
 	private ObjetManufacture feu;
 
 	private int poidsEmporte;
-
+	
 	private int partiesJouees;
 
 	private Paire<Integer, Integer> caseCourante;
@@ -26,6 +29,9 @@ public class Hero {
 	
 	private int nbDeplacements;
 
+	
+	// Constructeur
+	
 	public Hero(String nom) {
 
 		this.nom = nom;
@@ -61,67 +67,27 @@ public class Hero {
 		}
 
 	}
-
-	public String getNom() {
-
-		return this.nom;
-
-	}
-
-	public Ressource[] getStockBlé() {
-
-		return this.stockBle;
-
-	}
-
-	public Ressource[] getStockBois() {
-
-		return this.stockBois;
-
-	}
-
-	public Ressource[] getStockPierre() {
-
-		return this.stockPierre;
-
-	}
-
-	public ObjetManufacture getFarine() {
-
-		return this.farine;
-
-	}
-
-	public ObjetManufacture getFeu() {
-
-		return this.feu;
-
-	}
-
-	public int getPoidsEmporté() {
-
-		return this.poidsEmporte;
-
-	}
-
-	public int getPartiesJouées() {
-
-		return this.partiesJouees;
-
-	}
-
-	public void incrémenterPartiesJouées() {
-
-		this.partiesJouees++;
-
-	}
-
+	
+	
+	// Methodes
+	
+	
+	/***
+	 * 
+	 * Vérifie si le joueur a un poid de moins de 13
+	 * 
+	 */
 	public boolean peutEmporterPlus() {
 
 		return this.poidsEmporte < 13;
 
 	}
 
+	/***
+	 * 
+	 * @param : ressource que le joueur veut ramasser
+	 * @return boolean : true si le joueur a bien récupéré la ressource
+	 */
 	public boolean ajouterRessource(Ressource ressource) {
 
 		if (peutEmporterPlus()) {
@@ -186,6 +152,9 @@ public class Hero {
 
 	}
 
+	/***
+	 * Fonction qui permet au joueur de prendre une ressource sur la case courante
+	 */
 	private void prendre() {
 
 		if (map[caseCourante.getPositionX()][caseCourante.getPositionY()] != null) {
@@ -204,6 +173,12 @@ public class Hero {
 
 	}
 
+	
+	/***
+	 * 
+	 * Fonction qui vérifie si le joueur a bien du feu et de la farine et fait du feu
+	 * @return : true si le pain a été fait
+	 */
 	public boolean fairePain() {
 
 		if (farine == null && feu == null) {
@@ -223,9 +198,14 @@ public class Hero {
 	}
 
 	/*----------------------------------------------------------------------------------------------*/
-
+	
+	
+	/***
+	 * Déplace le joueur dans la direction prise en parametre
+	 * @param direction
+	 */
 	private void seDeplacer(Direction direction) {
-
+		
 		switch (direction) {
 
 		case HAUT:
@@ -257,11 +237,19 @@ public class Hero {
 			break;
 
 		}
+		
+		nbDeplacements++;
 
 	}
 
 	/*----------------------------------------------------------------------------------------------*/
-
+	
+	/***
+	 * On parcour le tableau de ressource et on vérifie qu'il y a le nombre de ressource demandées
+	 * @param ressource
+	 * @param nbrAttendu
+	 * @return
+	 */
 	public boolean verifierStock(Ressource[] ressource, int nbrAttendu) {
 
 		int nbrRessource = 0;
@@ -295,7 +283,13 @@ public class Hero {
 	}
 
 	/*----------------------------------------------------------------------------------------------*/
-
+	
+	
+	/***
+	 * Lance une partie
+	 * @param map
+	 * @return
+	 */
 	public int jouer(Ressource[][] map) {
 
 		this.map = map;
@@ -307,9 +301,16 @@ public class Hero {
 	}
 
 	/*----------------------------------------------------------------------------------------------*/
-
+	
+	
+	/***
+	 * Fait parcourir toute la grille au joueur
+	 * @return
+	 */
 	public int parcoursMap() {
-
+		
+		// On parcour une fois toute la map pour récupérer le blé et la pierre
+		// On enregistre les positions des bois
 		for (int y = 0; y < 10; y++) {
 
 			if (caseCourante.getPositionX() == 0) {
@@ -359,42 +360,40 @@ public class Hero {
 		}
 
 
-		// Aller chercher les Bois
+		// Aller chercher les Bois dont on connais les positions
 		for (int i = 0; i < coordBoisSaved.length; i++) {
 
-			// On défini donc ou on va
+			// On défini la case sur laquelle on veut aller
 			int caseDestinationX = coordBoisSaved[i].getPositionX();
 			int caseDestinationY = coordBoisSaved[i].getPositionY();
 			
 
 			// On se déplace jusqu'à caseDestination en X puis Y
-			// On déplace les X
+			// On se déplace en X
 			while (caseCourante.getPositionX() != caseDestinationX) {
 				if (caseCourante.getPositionX() > caseDestinationX) {
 					seDeplacer(Direction.GAUCHE);
 				} else {
 					seDeplacer(Direction.DROITE);
 				}
-				nbDeplacements++;
 			}
 			
 			
-			// On déplace Y
+			// On se déplace en Y
 			while (caseCourante.getPositionY() != caseDestinationY) {
 				if (caseCourante.getPositionY() > caseDestinationY) {
 					seDeplacer(Direction.HAUT);
 				} else {
 					seDeplacer(Direction.BAS);
 				}
-				nbDeplacements++;
 			}
 
 			// On prend l'objet sur la case
 			prendre();
-			System.out.println("Test");
 
 		}
 		
+		// on fabrique le feu
 		feu = ((Bois)stockBois[0]).utiliser(stockBois);
 		
 		fairePain();
@@ -411,7 +410,6 @@ public class Hero {
 			} else {
 				seDeplacer(Direction.DROITE);
 			}
-			nbDeplacements++;
 		}
 
 		// On déplace Y
@@ -421,7 +419,6 @@ public class Hero {
 			} else {
 				seDeplacer(Direction.BAS);
 			}
-			nbDeplacements++;
 		}
 		
 		System.out.println("Final : " + caseCourante.getPositionX() + " " + caseCourante.getPositionY());
@@ -435,7 +432,11 @@ public class Hero {
 	}
 
 	/*----------------------------------------------------------------------------------------------*/
-
+	
+	
+	/***
+	 * On ramasse le blé sur la case courante
+	 */
 	public void ramasserBle() {
 
 		if (verifierStock(stockBle, 10) == false
@@ -443,12 +444,14 @@ public class Hero {
 
 			prendre();
 
-			System.out.println("g");
 
 		}
 
 	}
 
+	/***
+	 * On ramasse la pierre sur la case courante
+	 */
 	public void ramasserPierre() {
 
 		if (verifierStock(stockPierre, 1) == false
@@ -459,7 +462,10 @@ public class Hero {
 		}
 
 	}
-
+	
+	/***
+	 * On sauvegarde la position du bois qu'on a trouvé
+	 */
 	public void saveCoordBois() {
 
 		if (map[caseCourante.getPositionX()][caseCourante.getPositionY()] instanceof Bois) {
@@ -481,34 +487,5 @@ public class Hero {
 
 	/*----------------------------------------------------------------------------------------------*/
 
-	public void afficherMap() {
-
-		System.out.println(caseCourante.getPositionX() + " " + caseCourante.getPositionY());
-
-		for (int x = 0; x < 10; x++) {
-
-			for (int j = 0; j < 10; j++) {
-
-				if (caseCourante.getPositionX() == j && caseCourante.getPositionY() == x) {
-
-					System.out.print("1 ");
-
-				} else {
-
-					System.out.print('0' + " ");
-
-				}
-
-			}
-
-			System.out.println(" ");
-
-		}
-
-		System.out.println(" ");
-
-		System.out.println(" ");
-
-	}
 
 }

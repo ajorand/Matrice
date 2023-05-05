@@ -2,15 +2,21 @@ package matrice;
 
 public class Pierre extends Ressource {
 	
-private int poids = 3;
+	// Attributs
+	private int poids = 3;
 	
-	// Constructor
+	// Constructeur
 	public Pierre(String id) {
 		super(id);
 	}
 	
 	// Methods
 	
+	/***
+	 * 
+	 * @param r : tableau de ressources
+	 * @return : retourne un objet de type ObjetManufacture "Farine" si le joueur a les ressource nécéssaires
+	 */
 	public ObjetManufacture utiliser(Ressource[] r) {
 		int nbrDeBle = 0;
 		
@@ -37,11 +43,12 @@ private int poids = 3;
 				}
 			}
 			
-			// Return
+			// Return l'objet Farine
 			ObjetManufacture farine = new ObjetManufacture("Farine");
 			System.out.println("Vous avez fait de la farine");
 			return farine;
 		}
+		// Sinon affiche une erreur et renvoie null
 		else {
 			System.out.println("Vous n'avez pas assez de blé pour faire de la farine");
 			return null;
