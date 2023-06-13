@@ -8,7 +8,7 @@ public class LancerJeu {
 		
 		int nbrDeplacement;
 		
-		
+		/*
 		// Matrice 1
 		Ressource[][] matrix1 = new Ressource[10][10];
 	    for (int i = 0; i < 10; i++) {
@@ -21,9 +21,9 @@ public class LancerJeu {
 	    matrix1 [5][2] = new Bois("bois52");
 	    matrix1 [5][3] = new Bois("bois53");
 	    matrix1 [9][1] = new Bois("bois91");
-	    
+	    */
 		
-		/*
+		
 		// Matrice 2
 		Ressource[][] matrix2 = new Ressource[10][10];
 		for (int i = 0; i < 10; i++){
@@ -42,7 +42,7 @@ public class LancerJeu {
 		matrix2 [8][3] = new Bois("bois83");
 		matrix2 [9][9] = new Bois("bois99");
 		matrix2 [9][9] = new Ble("tt");
-		*/
+		
 		
 		
 		/*
@@ -71,7 +71,7 @@ public class LancerJeu {
 		// System.out.println(hero1.getNom());
 		
 	    // Changer en fonction de la matrice
-	    nbrDeplacement = hero1.jouer(matrix1);
+	    nbrDeplacement = hero1.jouer(matrix2);
 	    
 	    System.out.println("Gagné en " + nbrDeplacement + " coups !");
 		
